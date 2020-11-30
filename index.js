@@ -1,8 +1,8 @@
 'use strict';
 
-const express = require('express')
-const winston = require('winston')
-const app = express()
+const express = require('express');
+const winston = require('winston');
+const app = express();
 
 const format = winston.format.combine(
   winston.format.colorize(),
@@ -20,12 +20,13 @@ const logger = winston.createLogger({
 });
 
 app.use((req, res, done) => {
-  logger.info(req.originalUrl)
+  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  logger.info(`${ip} ${req.originalUrl}`);
   done();
 });
 
 app.get('/', function (req, res) {
-  res.send('Hello World')
-})
+  res.send('Hello World');
+});
 
-app.listen(80)
+app.listen(80);
